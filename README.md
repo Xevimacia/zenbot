@@ -51,20 +51,23 @@ Watch the real-time SSE stream with status updates and word-by-word message stre
 ```
 zenbot/
 ├── cmd/zenbot/           # Main application entrypoint
-│   └── main.go          # HTTP server setup
+│   └── main.go          # HTTP server setup and configuration
 ├── internal/
 │   ├── handler/         # HTTP handlers and SSE streaming
-│   │   ├── routes.go    # Route registration
-│   │   └── zenbot.go    # Main zenbot handler
+│   │   ├── routes.go    # Route registration and middleware
+│   │   ├── zenbot.go    # Main zenbot handler with concurrency
+│   │   └── zenbot_test.go # Integration tests for SSE streaming
 │   ├── llm/            # OpenAI client and prompt management
 │   │   ├── client.go   # LLM service interface and OpenAI client
 │   │   ├── client_test.go # Unit tests for LLM service
-│   │   └── prompts.go  # LLM prompt constants
+│   │   └── prompts.go  # LLM prompt constants and cultural alignment
 │   └── model/          # Shared data structures
-│       └── zenbot.go    # Request/response models
+│       └── zenbot.go    # Request/response models and SSE events
 ├── .gitignore           # Git ignore patterns
-├── go.mod               # Go module definition
-└── README.md
+├── .env.example         # Environment variables template
+├── go.mod              # Go module definition and dependencies
+├── go.sum              # Dependency checksums
+└── README.md           # Project documentation
 ```
 
 ## 🔌 API Usage
@@ -196,10 +199,10 @@ go test -race ./...
 **Current Test Coverage:**
 - ✅ Input validation (empty message handling)
 - ✅ HTTP method middleware (POST only)
-- ✅ SSE streaming functionality
-- ✅ LLM service interface and client creation
 - ✅ Progressive message streaming
-- ✅ Error handling and SSE error events
+- ✅ LLM service interface and client creation
+- ✅ Environment variable handling
+- ✅ Agent-based generation testing
 - ✅ Race condition testing (thread safety)
 
 
@@ -224,22 +227,24 @@ OPENAI_API_KEY=your-openai-api-key
 
 You can set this in your shell or use a `.env` file with a library like `godotenv`.
 
-## 🚀 Future Improvements (Optional)
-- **Persistent Thread History**: Implement SQLite or similar lightweight database for storing thread history.
-- **Separate Messages Table**: Enhance thread history storage by using a messages table instead of a JSON array in threads.
-- **Authentication & Authorization**: Add JWT-based authentication for multi-user support with role-based access control.
-- **API Versioning**: Implement `/v1/zenbot` endpoint structure for future API evolution.
-- **Health Check Endpoint**: Add `/health` endpoint for monitoring and load balancer integration.
-- **Metrics & Monitoring**: Integrate Prometheus metrics for request counts, response times, and error rates.
-- **Configuration Management**: Support for different environments (dev, staging, prod) with configurable LLM models and settings.
-- **Caching Layer**: Implement Redis caching for frequently requested dilemmas and responses.
-- **Request Validation**: Add comprehensive input validation with detailed error messages and request sanitization.
-- **Graceful Shutdown**: Implement proper shutdown handling for long-running SSE connections.
-- **Load Balancing**: Add support for horizontal scaling with sticky sessions for SSE connections.
-- **SSE Helper Improvements**: Add keep-alive pings and multi-line data support.
-- **Rate Limiting**: Implement rate limiting for multi-user support.
-- **Enhanced Logging**: Add comprehensive logging for debugging and monitoring.
-- **Meditative Frontend**: Add HTML/CSS frontend with SSE client for direct user interaction.
+## 🚀 Future Improvements (Production-Ready Enhancements)
+
+### **High Priority - Core Production Features**
+- **Persistent Thread History**: Implement SQLite for storing conversation history across sessions, enabling team continuity and context preservation.
+- **Health Check Endpoint**: Add `/health` endpoint for monitoring, load balancer integration, and production deployment readiness.
+- **Enhanced Logging**: Implement structured logging with correlation IDs for debugging complex SSE streams and LLM interactions.
+- **Graceful Shutdown**: Add proper shutdown handling for long-running SSE connections to prevent data loss during deployments.
+
+### **Medium Priority - Operational Excellence**
+- **Configuration Management**: Support for different environments (dev, staging, prod) with configurable LLM models, timeouts, and settings.
+- **Request Validation**: Add comprehensive input validation with detailed error messages, request sanitization, and rate limiting per team.
+- **Metrics & Monitoring**: Integrate basic metrics for request counts, response times, and error rates to monitor system health.
+- **SSE Helper Improvements**: Add keep-alive pings and multi-line data support to prevent timeouts in production environments.
+
+### **Nice-to-Have - Team Experience**
+- **Meditative Frontend**: Add a simple HTML/CSS frontend with SSE client for direct team interaction without external tools.
+- **Caching Layer**: Implement in-memory caching for frequently requested dilemmas to improve response times.
+- **Separate Messages Table**: Enhance thread history with proper database schema for better querying and performance.
 
 ## 🤝 Contributing
 
