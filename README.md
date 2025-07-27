@@ -60,32 +60,41 @@ zenbot/
 ```json
 {
   "conversation_id": "unique_conversation_id_here",
-  "message": {
-    "role": "user",
-    "content": "Should we launch the new AI feature now or refine it further?"
-  }
+  "message": "Should we launch the new AI feature now or refine it further?"
 }
 ```
 
-*If `conversation_id` is omitted, a new conversation will be created.*
+*If `conversation_id` is omitted, a new conversation will be created automatically.*
 
 **Response:** Server-Sent Events (SSE) stream with real-time updates:
 
 ```
 event: status
+data: Processing dilemma...
+
+event: status
 data: Build Fast argues
 
-event: status  
+event: status
 data: Stillness reflects
+
+event: status
+data: Combining results
 
 event: status
 data: Resolution forming
 
 event: message
-data: **Resolution:** A clear path forward balances ambition with wisdom. [Word-by-word streaming is enabled]
+data: message_id: zenbot-1234567890, content: A
+
+event: message
+data: message_id: zenbot-1234567890, content: A clear
+
+event: message
+data: message_id: zenbot-1234567890, content: A clear path
 ```
 
-The **Zen Judge**'s final message will be streamed word by word to provide a more natural flow. Each word will appear with a slight delay, mimicking human-like typing.
+The **Zen Judge**'s final message will be streamed with progressive content updates, showing the message being built up word by word with a slight delay, mimicking human-like typing.
 
 ### Example with curl:
 ```bash
@@ -100,10 +109,11 @@ curl -X POST http://localhost:8080/zenbot \
 ## 🧠 How It Works
 
 1. **User submits a dilemma** via POST to `/zenbot`
-2. **Build Fast (LLM1)** generates an action-oriented argument
-3. **Stillness (LLM2)** provides a reflective, balanced perspective  
-4. **Zen Judge (LLM3)** synthesizes both views into a professional resolution
-5. **SSE streaming** delivers real-time status updates and final response
+2. **HTTP Method Middleware** validates the request method (POST only)
+3. **Build Fast (LLM1)** generates an action-oriented argument
+4. **Stillness (LLM2)** provides a reflective, balanced perspective  
+5. **Zen Judge (LLM3)** synthesizes both views into a professional resolution
+6. **SSE streaming** delivers real-time status updates and progressive content updates
 
 ## 🧪 Testing
 

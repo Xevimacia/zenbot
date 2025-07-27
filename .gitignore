@@ -14,6 +14,7 @@ zenbot-rules.mdc
 *.dylib
 *.test
 *.out
+zenbot
 
 # Go workspace file
 go.work
