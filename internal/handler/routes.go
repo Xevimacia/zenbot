@@ -29,6 +29,6 @@ func MethodMiddleware(method string) func(http.HandlerFunc) http.HandlerFunc {
 
 // RegisterRoutes registers all HTTP routes for the ZenBot API
 func RegisterRoutes(mux *http.ServeMux) {
-	// Register the /zenbot endpoint with POST method restriction and SSE headers
-	mux.HandleFunc("/zenbot", MethodMiddleware(http.MethodPost)(SSEMiddleware(HandleZenbotRequest)))
+	// Register the /v1/zenbot endpoint with POST method restriction and SSE headers
+	mux.HandleFunc("/v1/zenbot", MethodMiddleware(http.MethodPost)(SSEMiddleware(HandleZenbotRequest)))
 }

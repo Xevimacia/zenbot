@@ -55,7 +55,7 @@ zenbot/
 
 ## 🔌 API Usage
 
-### Endpoint: `POST /zenbot`
+### Endpoint: `POST /v1/zenbot`
 
 **Request Body:**
 ```json
@@ -109,7 +109,7 @@ You should see: `ZenBot API starting on port 8080`
 ### 2. Test with curl (Detailed SSE Output)
 ```bash
 # Terminal 2: See the full SSE stream with status updates
-curl -X POST http://localhost:8080/zenbot \
+curl -X POST http://localhost:8080/v1/zenbot \
   -H "Content-Type: application/json" \
   -d '{
     "conversation_id": "my-team-dilemma-001",
@@ -213,9 +213,19 @@ You can set this in your shell or use a `.env` file with a library like `godoten
 ## 🚀 Future Improvements (Optional)
 - **Persistent Thread History**: Implement SQLite or similar lightweight database for storing thread history.
 - **Separate Messages Table**: Enhance thread history storage by using a messages table instead of a JSON array in threads.
+- **Authentication & Authorization**: Add JWT-based authentication for multi-user support with role-based access control.
+- **API Versioning**: Implement `/v1/zenbot` endpoint structure for future API evolution.
+- **Health Check Endpoint**: Add `/health` endpoint for monitoring and load balancer integration.
+- **Metrics & Monitoring**: Integrate Prometheus metrics for request counts, response times, and error rates.
+- **Configuration Management**: Support for different environments (dev, staging, prod) with configurable LLM models and settings.
+- **Caching Layer**: Implement Redis caching for frequently requested dilemmas and responses.
+- **Request Validation**: Add comprehensive input validation with detailed error messages and request sanitization.
+- **Graceful Shutdown**: Implement proper shutdown handling for long-running SSE connections.
+- **Load Balancing**: Add support for horizontal scaling with sticky sessions for SSE connections.
 - **SSE Helper Improvements**: Add keep-alive pings and multi-line data support.
 - **Rate Limiting**: Implement rate limiting for multi-user support.
 - **Enhanced Logging**: Add comprehensive logging for debugging and monitoring.
+- **Meditative Frontend**: Add HTML/CSS frontend with SSE client for direct user interaction.
 
 ## 🤝 Contributing
 

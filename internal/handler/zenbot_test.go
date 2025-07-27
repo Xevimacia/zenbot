@@ -20,7 +20,7 @@ func TestHandleZenbotRequest_EmptyMessage(t *testing.T) {
 	jsonBody, _ := json.Marshal(reqBody)
 
 	// Create HTTP request
-	req := httptest.NewRequest("POST", "/zenbot", bytes.NewBuffer(jsonBody))
+	req := httptest.NewRequest("POST", "/v1/zenbot", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 
@@ -35,7 +35,7 @@ func TestHandleZenbotRequest_EmptyMessage(t *testing.T) {
 }
 
 func TestHandleZenbotRequest_InvalidMethod(t *testing.T) {
-	req := httptest.NewRequest("GET", "/zenbot", nil)
+	req := httptest.NewRequest("GET", "/v1/zenbot", nil)
 	rr := httptest.NewRecorder()
 
 	// Test with middleware applied
