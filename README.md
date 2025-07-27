@@ -36,10 +36,16 @@ The server will start on `http://localhost:8080`
 ```
 zenbot/
 ├── cmd/zenbot/           # Main application entrypoint
+│   └── main.go          # HTTP server setup
 ├── internal/
-│   ├── llm/            # OpenAI client and prompt management
 │   ├── handler/         # HTTP handlers and SSE streaming
+│   │   ├── routes.go    # Route registration
+│   │   └── zenbot.go    # Main zenbot handler
+│   ├── llm/            # OpenAI client and prompt management (coming soon)
 │   └── model/          # Shared data structures
+│       └── zenbot.go    # Request/response models
+├── .gitignore           # Git ignore patterns
+├── go.mod               # Go module definition
 └── README.md
 ```
 
@@ -80,7 +86,9 @@ The **Zen Judge**'s final message will be streamed word by word to provide a mor
 
 ### Example with curl:
 ```bash
-curl -X POST http://localhost:8080/zenbot   -H "Content-Type: application/json"   -d '{
+curl -X POST http://localhost:8080/zenbot \
+  -H "Content-Type: application/json" \
+  -d '{
     "conversation_id": "unique_conversation_id_here",
     "message": "Should we launch the new AI feature now or refine it further?"
   }'
@@ -105,10 +113,14 @@ go test ./...
 go test -race ./...
 ```
 
-**Test Coverage:**
-- ✅ LLM service interface and error handling
-- ✅ Handler integration tests (SSE, error cases)
-- ✅ Race detection (thread-safe SSE streaming)
+**Current Test Coverage:**
+- ✅ Basic project compilation
+- ✅ HTTP server startup and response
+
+**Planned Test Coverage:**
+- 🔄 LLM service interface and error handling
+- 🔄 Handler integration tests (SSE, error cases)
+- 🔄 Race detection (thread-safe SSE streaming)
 
 ## 🎨 Cultural Alignment
 
