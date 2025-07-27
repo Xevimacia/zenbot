@@ -32,6 +32,20 @@ go run cmd/zenbot/main.go
 
 The server will start on `http://localhost:8080`
 
+### 🎯 Quick Demo
+Test the API immediately with this curl command:
+
+```bash
+curl -X POST http://localhost:8080/v1/zenbot \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Should I launch my startup now or wait for more validation?"
+  }' \
+  --no-buffer
+```
+
+Watch the real-time SSE stream with status updates and word-by-word message streaming!
+
 ## 📁 Project Structure
 
 ```
