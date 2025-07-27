@@ -41,7 +41,10 @@ zenbot/
 │   ├── handler/         # HTTP handlers and SSE streaming
 │   │   ├── routes.go    # Route registration
 │   │   └── zenbot.go    # Main zenbot handler
-│   ├── llm/            # OpenAI client and prompt management (coming soon)
+│   ├── llm/            # OpenAI client and prompt management
+│   │   ├── client.go   # LLM service interface and OpenAI client
+│   │   ├── client_test.go # Unit tests for LLM service
+│   │   └── prompts.go  # LLM prompt constants
 │   └── model/          # Shared data structures
 │       └── zenbot.go    # Request/response models
 ├── .gitignore           # Git ignore patterns
@@ -116,9 +119,10 @@ go test -race ./...
 **Current Test Coverage:**
 - ✅ Basic project compilation
 - ✅ HTTP server startup and response
+- ✅ LLM service interface and client creation
+- ✅ Mock LLM service for testing
 
 **Planned Test Coverage:**
-- 🔄 LLM service interface and error handling
 - 🔄 Handler integration tests (SSE, error cases)
 - 🔄 Race detection (thread-safe SSE streaming)
 
