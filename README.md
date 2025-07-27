@@ -15,7 +15,7 @@ ZenBot embodies Acai Travel's dual nature as entrepreneurial builders and advoca
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/xevimacia/zenbot.git
+git clone https://github.com/Xevimacia/zenbot.git
 cd zenbot
 
 # Install dependencies
