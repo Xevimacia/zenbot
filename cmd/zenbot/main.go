@@ -5,10 +5,14 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/xevimacia/zenbot/internal/handler"
 )
 
 func main() {
+	// Load .env file if it exists
+	godotenv.Load()
+
 	// Get port from environment variable or use default
 	port := os.Getenv("PORT")
 	if port == "" {

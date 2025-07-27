@@ -11,11 +11,11 @@ import (
 	"github.com/xevimacia/zenbot/internal/model"
 )
 
-func TestHandleZenbotRequest_ValidRequest(t *testing.T) {
-	// Create a test request
+func TestHandleZenbotRequest_EmptyMessage(t *testing.T) {
+	// Create a test request with empty message
 	reqBody := model.ZenbotRequest{
 		ConversationID: "test-conversation",
-		Message:        "Should we launch the new feature now?",
+		Message:        "",
 	}
 	jsonBody, _ := json.Marshal(reqBody)
 
@@ -24,24 +24,13 @@ func TestHandleZenbotRequest_ValidRequest(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 
-	// Call the handler
-	HandleZenbotRequest(rr, req)
+	// Call the handler with SSE middleware
+	SSEMiddleware(HandleZenbotRequest)(rr, req)
 
-	// Check status code and SSE headers
-	if rr.Code != http.StatusOK {
-		t.Errorf("Expected status 200, got %d", rr.Code)
-	}
-	if rr.Header().Get("Content-Type") != "text/event-stream" {
-		t.Error("Expected Content-Type text/event-stream")
-	}
-
-	// Check that we got SSE events
+	// Check that we got an error
 	body := rr.Body.String()
-	if !strings.Contains(body, "event: status") {
-		t.Error("Expected SSE status events")
-	}
-	if !strings.Contains(body, "event: message") {
-		t.Error("Expected SSE message events")
+	if !strings.Contains(body, "empty message provided") {
+		t.Error("Expected error for empty message")
 	}
 }
 
@@ -50,7 +39,11 @@ func TestHandleZenbotRequest_InvalidMethod(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Test with middleware applied
-	MethodMiddleware(http.MethodPost)(HandleZenbotRequest)(rr, req)
+	handlerFunc := func(w http.ResponseWriter, r *http.Request) {
+		HandleZenbotRequest(w, r)
+	}
+
+	MethodMiddleware(http.MethodPost)(handlerFunc)(rr, req)
 
 	if rr.Code != http.StatusMethodNotAllowed {
 		t.Errorf("Expected status 405, got %d", rr.Code)

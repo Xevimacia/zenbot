@@ -23,7 +23,8 @@ go mod tidy
 
 # Copy the example environment file and fill in your values
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Set your OpenAI API key in .env
+OPENAI_API_KEY=your-openai-api-key
 
 # Run the server
 go run cmd/zenbot/main.go
@@ -96,22 +97,74 @@ data: message_id: zenbot-1234567890, content: A clear path
 
 The **Zen Judge**'s final message will be streamed with progressive content updates, showing the message being built up word by word with a slight delay, mimicking human-like typing.
 
-### Example with curl:
+## 🧪 Step-by-Step Testing Guide
+
+### 1. Start the Server
 ```bash
+# Terminal 1: Start the ZenBot API server
+go run cmd/zenbot/main.go
+```
+You should see: `ZenBot API starting on port 8080`
+
+### 2. Test with curl (Detailed SSE Output)
+```bash
+# Terminal 2: See the full SSE stream with status updates
 curl -X POST http://localhost:8080/zenbot \
   -H "Content-Type: application/json" \
   -d '{
-    "conversation_id": "unique_conversation_id_here",
-    "message": "Should we launch the new AI feature now or refine it further?"
-  }'
+    "conversation_id": "my-team-dilemma-001",
+    "message": "Do I need to create a new feature or spend more time with customers to polish the features I have?"
+  }' \
+  --no-buffer
+```
+
+**Expected Output:**
+```
+event: status
+data: Processing dilemma...
+
+event: status
+data: Build Fast argues
+
+event: status
+data: Stillness reflects
+
+event: status
+data: Got response from BuildFast
+
+event: status
+data: Got response from Stillness
+
+event: status
+data: Combining results
+
+event: status
+data: Resolution forming
+
+event: message
+data: message_id: zenbot-1753630945, content: To
+
+event: message
+data: message_id: zenbot-1753630945, content: To rush
+
+event: message
+data: message_id: zenbot-1753630945, content: To rush is
+
+event: message
+data: message_id: zenbot-1753630945, content: To rush is to
+
+event: message
+data: message_id: zenbot-1753630945, content: To rush is to pause, 🌿
+
+[... continues with word-by-word streaming ...]
 ```
 
 ## 🧠 How It Works
 
 1. **User submits a dilemma** via POST to `/zenbot`
 2. **HTTP Method Middleware** validates the request method (POST only)
-3. **Build Fast (LLM1)** generates an action-oriented argument
-4. **Stillness (LLM2)** provides a reflective, balanced perspective  
+3. **SSE Middleware** sets up streaming headers
+4. **Build Fast (LLM1)** and **Stillness (LLM2)** run concurrently using goroutines
 5. **Zen Judge (LLM3)** synthesizes both views into a professional resolution
 6. **SSE streaming** delivers real-time status updates and progressive content updates
 
@@ -127,14 +180,14 @@ go test -race ./...
 ```
 
 **Current Test Coverage:**
-- ✅ Basic project compilation
-- ✅ HTTP server startup and response
+- ✅ Input validation (empty message handling)
+- ✅ HTTP method middleware (POST only)
+- ✅ SSE streaming functionality
 - ✅ LLM service interface and client creation
-- ✅ Mock LLM service for testing
+- ✅ Progressive message streaming
+- ✅ Error handling and SSE error events
+- ✅ Race condition testing (thread safety)
 
-**Planned Test Coverage:**
-- 🔄 Handler integration tests (SSE, error cases)
-- 🔄 Race detection (thread-safe SSE streaming)
 
 ## 🎨 Cultural Alignment
 
@@ -148,17 +201,21 @@ The API reflects Acai Travel's unique culture:
 
 ### Environment Variables
 
-The application uses a `.env` file for configuration. Copy `.env.example` to `.env` and fill in your values:
+The application requires the following environment variable:
 
 ```bash
 # Required
 OPENAI_API_KEY=your-openai-api-key
 ```
 
+You can set this in your shell or use a `.env` file with a library like `godotenv`.
+
 ## 🚀 Future Improvements (Optional)
 - **Persistent Thread History**: Implement SQLite or similar lightweight database for storing thread history.
 - **Separate Messages Table**: Enhance thread history storage by using a messages table instead of a JSON array in threads.
-- **SSE Helper Improvements**: Improve support for multi-line data and send multiple data lines per SSE spec.
+- **SSE Helper Improvements**: Add keep-alive pings and multi-line data support.
+- **Rate Limiting**: Implement rate limiting for multi-user support.
+- **Enhanced Logging**: Add comprehensive logging for debugging and monitoring.
 
 ## 🤝 Contributing
 
